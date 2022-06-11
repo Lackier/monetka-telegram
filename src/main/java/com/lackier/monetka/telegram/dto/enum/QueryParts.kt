@@ -1,4 +1,4 @@
-package com.lackier.monetka.telegram.enum
+package com.lackier.monetka.telegram.dto.enum
 
 enum class QueryParts(val path: String) {
     PAGE_QUERY("_page="),

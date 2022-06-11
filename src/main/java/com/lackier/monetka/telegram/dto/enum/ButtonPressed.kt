@@ -1,6 +1,6 @@
-package com.lackier.monetka.telegram.enum
+package com.lackier.monetka.telegram.dto.enum
 
-import com.lackier.monetka.telegram.external.enum.GroupType
+import com.lackier.monetka.telegram.external.dto.enum.GroupType
 
 enum class ButtonPressed(val path: String, val text: String) {
     MENU("/menu", "Menu"),

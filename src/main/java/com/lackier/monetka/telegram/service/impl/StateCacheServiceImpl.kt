@@ -2,8 +2,8 @@ package com.lackier.monetka.telegram.service.impl
 
 import com.lackier.monetka.telegram.dto.ChatState
 import com.lackier.monetka.telegram.dto.GroupAdd
-import com.lackier.monetka.telegram.enum.State
-import com.lackier.monetka.telegram.external.enum.GroupType
+import com.lackier.monetka.telegram.dto.enum.State
+import com.lackier.monetka.telegram.external.dto.enum.GroupType
 import com.lackier.monetka.telegram.service.api.StateCacheService
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled

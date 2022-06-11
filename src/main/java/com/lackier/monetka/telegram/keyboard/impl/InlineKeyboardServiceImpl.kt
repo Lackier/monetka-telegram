@@ -1,7 +1,7 @@
 package com.lackier.monetka.telegram.keyboard.impl
 
-import com.lackier.monetka.telegram.enum.ButtonPressed
-import com.lackier.monetka.telegram.enum.QueryParts
+import com.lackier.monetka.telegram.dto.enum.ButtonPressed
+import com.lackier.monetka.telegram.dto.enum.QueryParts
 import com.lackier.monetka.telegram.external.dto.Group
 import com.lackier.monetka.telegram.external.dto.Transaction
 import com.lackier.monetka.telegram.keyboard.api.InlineKeyboardService

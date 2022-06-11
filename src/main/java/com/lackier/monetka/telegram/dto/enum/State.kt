@@ -1,4 +1,4 @@
-package com.lackier.monetka.telegram.enum
+package com.lackier.monetka.telegram.dto.enum
 
 enum class State {
     DEFAULT,

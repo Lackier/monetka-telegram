@@ -1,7 +1,7 @@
 package com.lackier.monetka.telegram.handler
 
-import com.lackier.monetka.telegram.enum.ButtonPressed
-import com.lackier.monetka.telegram.enum.State
+import com.lackier.monetka.telegram.dto.enum.ButtonPressed
+import com.lackier.monetka.telegram.dto.enum.State
 import com.lackier.monetka.telegram.external.api.MonetkaApiClient
 import com.lackier.monetka.telegram.external.dto.Group
 import com.lackier.monetka.telegram.keyboard.api.InlineKeyboardService

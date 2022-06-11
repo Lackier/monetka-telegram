@@ -1,8 +1,8 @@
 package com.lackier.monetka.telegram.service.api
 
 import com.lackier.monetka.telegram.dto.GroupAdd
-import com.lackier.monetka.telegram.enum.State
-import com.lackier.monetka.telegram.external.enum.GroupType
+import com.lackier.monetka.telegram.dto.enum.State
+import com.lackier.monetka.telegram.external.dto.enum.GroupType
 
 interface StateCacheService {
     fun cache(chatId: String, state: State)
