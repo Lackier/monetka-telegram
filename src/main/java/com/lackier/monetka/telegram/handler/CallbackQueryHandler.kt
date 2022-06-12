@@ -49,53 +49,39 @@ class CallbackQueryHandler(
         return SendMessage(chatId, "Default")
     }
 
-    private fun statistics(chatId: String): SendMessage {
-        stateCacheService.cache(chatId, State.STATISTICS)
-        val message = SendMessage(chatId, ButtonPressed.STATISTICS.text)
-        message.replyMarkup = inlineKeyboardService.statistics()//TODO
+    private fun menu(chatId: String): SendMessage {
+        stateCacheService.cache(chatId, State.MENU)
+        val message = SendMessage(chatId, ButtonPressed.MENU.text)
+        message.replyMarkup = inlineKeyboardService.menu()
         return message
     }
 
-    private fun expense(chatId: String, data: String): Nothing? {
-        stateCacheService.cache(chatId, State.EXPENSES)
+    private fun settings(chatId: String): SendMessage {
+        stateCacheService.cache(chatId, State.SETTINGS)
+        val message = SendMessage(chatId, ButtonPressed.SETTINGS.text)
+        message.replyMarkup = inlineKeyboardService.menu()
+        return message
+    }
+
+    private fun groups(chatId: String): SendMessage {
+        stateCacheService.cache(chatId, State.GROUPS)
+        val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
+        message.replyMarkup = inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID()))
+        return message
+    }
+
+    private fun groupsPage(chatId: String, data: String): SendMessage {
+        stateCacheService.cache(chatId, State.GROUPS)
+        val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
+        message.replyMarkup =
+            inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID(), getPageNumber(data)))
+        return message
+    }
+
+    private fun group(chatId: String, data: String): Nothing? {
+        stateCacheService.cache(chatId, State.GROUPS)
         val id = getId(data)
         return null//TODO
-    }
-
-    private fun expensesPage(chatId: String, data: String): SendMessage {
-        stateCacheService.cache(chatId, State.EXPENSES)
-        val message = SendMessage(chatId, ButtonPressed.EXPENSES.text)
-        message.replyMarkup =
-            inlineKeyboardService.expenses(apiClient.getTodayExpenses(UUID.randomUUID(), getPageNumber(data)))
-        return message
-    }
-
-    private fun expenses(chatId: String): SendMessage {
-        stateCacheService.cache(chatId, State.EXPENSES)
-        val message = SendMessage(chatId, ButtonPressed.EXPENSES.text)
-        message.replyMarkup = inlineKeyboardService.expenses(apiClient.getTodayExpenses(UUID.randomUUID()))
-        return message
-    }
-
-    private fun income(chatId: String, data: String): Nothing? {
-        stateCacheService.cache(chatId, State.INCOMES)
-        val id = getId(data)
-        return null//TODO
-    }
-
-    private fun incomesPage(chatId: String, data: String): SendMessage {
-        stateCacheService.cache(chatId, State.INCOMES)
-        val message = SendMessage(chatId, ButtonPressed.INCOMES.text)
-        message.replyMarkup =
-            inlineKeyboardService.incomes(apiClient.getTodayIncomes(UUID.randomUUID(), getPageNumber(data)))
-        return message
-    }
-
-    private fun incomes(chatId: String): SendMessage {
-        stateCacheService.cache(chatId, State.INCOMES)
-        val message = SendMessage(chatId, ButtonPressed.INCOMES.text)
-        message.replyMarkup = inlineKeyboardService.incomes(apiClient.getTodayIncomes(UUID.randomUUID()))
-        return message
     }
 
     private fun groupAdd(chatId: String, data: String): SendMessage? {
@@ -114,38 +100,52 @@ class CallbackQueryHandler(
         }
     }
 
-    private fun group(chatId: String, data: String): Nothing? {
-        stateCacheService.cache(chatId, State.GROUPS)
+    private fun incomes(chatId: String): SendMessage {
+        stateCacheService.cache(chatId, State.INCOMES)
+        val message = SendMessage(chatId, ButtonPressed.INCOMES.text)
+        message.replyMarkup = inlineKeyboardService.incomes(apiClient.getTodayIncomes(UUID.randomUUID()))
+        return message
+    }
+
+    private fun incomesPage(chatId: String, data: String): SendMessage {
+        stateCacheService.cache(chatId, State.INCOMES)
+        val message = SendMessage(chatId, ButtonPressed.INCOMES.text)
+        message.replyMarkup =
+            inlineKeyboardService.incomes(apiClient.getTodayIncomes(UUID.randomUUID(), getPageNumber(data)))
+        return message
+    }
+
+    private fun income(chatId: String, data: String): Nothing? {
+        stateCacheService.cache(chatId, State.INCOMES)
         val id = getId(data)
         return null//TODO
     }
 
-    private fun groupsPage(chatId: String, data: String): SendMessage {
-        stateCacheService.cache(chatId, State.GROUPS)
-        val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
+    private fun expenses(chatId: String): SendMessage {
+        stateCacheService.cache(chatId, State.EXPENSES)
+        val message = SendMessage(chatId, ButtonPressed.EXPENSES.text)
+        message.replyMarkup = inlineKeyboardService.expenses(apiClient.getTodayExpenses(UUID.randomUUID()))
+        return message
+    }
+
+    private fun expensesPage(chatId: String, data: String): SendMessage {
+        stateCacheService.cache(chatId, State.EXPENSES)
+        val message = SendMessage(chatId, ButtonPressed.EXPENSES.text)
         message.replyMarkup =
-            inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID(), getPageNumber(data)))
+            inlineKeyboardService.expenses(apiClient.getTodayExpenses(UUID.randomUUID(), getPageNumber(data)))
         return message
     }
 
-    private fun groups(chatId: String): SendMessage {
-        stateCacheService.cache(chatId, State.GROUPS)
-        val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
-        message.replyMarkup = inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID()))
-        return message
+    private fun expense(chatId: String, data: String): Nothing? {
+        stateCacheService.cache(chatId, State.EXPENSES)
+        val id = getId(data)
+        return null//TODO
     }
 
-    private fun settings(chatId: String): SendMessage {
-        stateCacheService.cache(chatId, State.SETTINGS)
-        val message = SendMessage(chatId, ButtonPressed.SETTINGS.text)
-        message.replyMarkup = inlineKeyboardService.menu()
-        return message
-    }
-
-    private fun menu(chatId: String): SendMessage {
-        stateCacheService.cache(chatId, State.MENU)
-        val message = SendMessage(chatId, ButtonPressed.MENU.text)
-        message.replyMarkup = inlineKeyboardService.menu()
+    private fun statistics(chatId: String): SendMessage {
+        stateCacheService.cache(chatId, State.STATISTICS)
+        val message = SendMessage(chatId, ButtonPressed.STATISTICS.text)
+        message.replyMarkup = inlineKeyboardService.statistics()//TODO
         return message
     }
 

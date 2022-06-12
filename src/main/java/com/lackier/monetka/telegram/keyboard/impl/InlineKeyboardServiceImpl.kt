@@ -44,7 +44,10 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
     }
 
     private fun groupButton(group: Group): InlineKeyboardButton {
-        return InlineKeyboardButton(group.name, ButtonPressed.GROUPS.path + QueryParts.ID_QUERY.path + group.id)
+        return InlineKeyboardButton(
+            group.name + " (" + group.type.text + ')',
+            ButtonPressed.GROUPS.path + QueryParts.ID_QUERY.path + group.id
+        )
     }
 
     private fun addButton(buttonPressed: ButtonPressed): List<InlineKeyboardButton> {
