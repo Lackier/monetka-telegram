@@ -78,12 +78,6 @@ class CallbackQueryHandler(
         return message
     }
 
-    private fun group(chatId: String, data: String): Nothing? {
-        stateCacheService.cache(chatId, State.GROUPS)
-        val id = getId(data)
-        return null//TODO
-    }
-
     private fun groupAdd(chatId: String, data: String): SendMessage? {
         stateCacheService.cache(chatId, State.GROUP_ADD)
         val cached = stateCacheService.getGroupAdd(chatId)
@@ -98,6 +92,12 @@ class CallbackQueryHandler(
         } else {
             null
         }
+    }
+
+    private fun group(chatId: String, data: String): Nothing? {
+        stateCacheService.cache(chatId, State.GROUPS)
+        val id = getId(data)
+        return null//TODO
     }
 
     private fun incomes(chatId: String): SendMessage {
