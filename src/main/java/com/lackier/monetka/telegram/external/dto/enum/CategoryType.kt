@@ -1,6 +1,6 @@
 package com.lackier.monetka.telegram.external.dto.enum
 
-enum class GroupType(val text: String) {
+enum class CategoryType(val text: String) {
     EXPENSE("expense"),
     INCOME("income")
 }

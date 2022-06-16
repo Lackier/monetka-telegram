@@ -1,22 +1,22 @@
 package com.lackier.monetka.telegram.service.api
 
-import com.lackier.monetka.telegram.dto.GroupAdd
-import com.lackier.monetka.telegram.dto.GroupEdit
+import com.lackier.monetka.telegram.dto.CategoryAdd
+import com.lackier.monetka.telegram.dto.CategoryEdit
 import com.lackier.monetka.telegram.dto.enum.State
-import com.lackier.monetka.telegram.external.dto.enum.GroupType
+import com.lackier.monetka.telegram.external.dto.enum.CategoryType
 import java.util.*
 
 interface StateCacheService {
     fun cache(chatId: String, state: State)
-    fun cacheGroupAdd(chatId: String, type: GroupType?, name: String?)
-    fun uncacheGroupAdd(chatId: String)
-    fun getGroupAdd(chatId: String): GroupAdd?
+    fun cacheCategoryAdd(chatId: String, type: CategoryType?, name: String?)
+    fun uncacheCategoryAdd(chatId: String)
+    fun getCategoryAdd(chatId: String): CategoryAdd?
     fun getState(chatId: String): State
-    fun hasGroupAdd(chatId: String): Boolean
-    fun getGroupEdit(chatId: String): GroupEdit?
-    fun cacheGroupEdit(chatId: String, id: UUID)
-    fun cacheGroupEdit(chatId: String, type: GroupType)
-    fun cacheGroupEdit(chatId: String, name: String)
-    fun uncacheGroupEdit(chatId: String)
-    fun hasGroupEdit(chatId: String): Boolean
+    fun hasCategoryAdd(chatId: String): Boolean
+    fun getCategoryEdit(chatId: String): CategoryEdit?
+    fun cacheCategoryEdit(chatId: String, id: UUID)
+    fun cacheCategoryEdit(chatId: String, type: CategoryType)
+    fun cacheCategoryEdit(chatId: String, name: String)
+    fun uncacheCategoryEdit(chatId: String)
+    fun hasCategoryEdit(chatId: String): Boolean
 }

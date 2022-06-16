@@ -6,7 +6,7 @@ import java.util.*
 data class Transaction(
     val id: UUID,
     val name: String,
-    val group: Group,
+    val category: Category,
     var value: Double,
     val createdAt: ZonedDateTime
 )

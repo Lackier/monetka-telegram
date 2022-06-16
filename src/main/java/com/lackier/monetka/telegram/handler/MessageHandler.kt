@@ -3,7 +3,7 @@ package com.lackier.monetka.telegram.handler
 import com.lackier.monetka.telegram.dto.enum.ButtonPressed
 import com.lackier.monetka.telegram.dto.enum.State
 import com.lackier.monetka.telegram.external.api.MonetkaApiClient
-import com.lackier.monetka.telegram.external.dto.Group
+import com.lackier.monetka.telegram.external.dto.Category
 import com.lackier.monetka.telegram.keyboard.api.InlineKeyboardService
 import com.lackier.monetka.telegram.service.api.StateCacheService
 import lombok.AccessLevel
@@ -29,23 +29,23 @@ class MessageHandler(
         val chatId: String = message.chatId.toString()
         val inputText: String = message.text
 
-        return if ((stateCacheService.getState(chatId) == State.GROUP_ADD) and stateCacheService.hasGroupAdd(chatId)) {
-            val groupAdd = stateCacheService.getGroupAdd(chatId)
-            apiClient.createGroup(Group(null, chatId, inputText, groupAdd?.type!!, ZonedDateTime.now()))
+        return if ((stateCacheService.getState(chatId) == State.CATEGORY_ADD) and stateCacheService.hasCategoryAdd(chatId)) {
+            val categoryAdd = stateCacheService.getCategoryAdd(chatId)
+            apiClient.createCategory(Category(null, chatId, inputText, categoryAdd?.type!!, ZonedDateTime.now()))
 
-            stateCacheService.uncacheGroupAdd(chatId)
-            stateCacheService.cache(chatId, State.GROUPS)
-            val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
-            message.replyMarkup = inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID()))
+            stateCacheService.uncacheCategoryAdd(chatId)
+            stateCacheService.cache(chatId, State.CATEGORIES)
+            val message = SendMessage(chatId, ButtonPressed.CATEGORIES.text)
+            message.replyMarkup = inlineKeyboardService.categories(apiClient.getCategories(UUID.randomUUID()))
             message
-        } else if ((stateCacheService.getState(chatId) == State.GROUP_EDIT) and stateCacheService.hasGroupEdit(chatId)) {
-            val groupAdd = stateCacheService.getGroupEdit(chatId)
-            apiClient.editGroup(Group(groupAdd?.id, chatId, inputText, groupAdd?.type!!, ZonedDateTime.now()))
+        } else if ((stateCacheService.getState(chatId) == State.CATEGORY_EDIT) and stateCacheService.hasCategoryEdit(chatId)) {
+            val categoryEdit = stateCacheService.getCategoryEdit(chatId)
+            apiClient.editCategory(Category(categoryEdit?.id, chatId, inputText, categoryEdit?.type!!, ZonedDateTime.now()))
 
-            stateCacheService.uncacheGroupEdit(chatId)
-            stateCacheService.cache(chatId, State.GROUPS)
-            val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
-            message.replyMarkup = inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID()))
+            stateCacheService.uncacheCategoryEdit(chatId)
+            stateCacheService.cache(chatId, State.CATEGORIES)
+            val message = SendMessage(chatId, ButtonPressed.CATEGORIES.text)
+            message.replyMarkup = inlineKeyboardService.categories(apiClient.getCategories(UUID.randomUUID()))
             message
         } else {
             SendMessage(chatId, "Menu")

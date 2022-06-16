@@ -4,7 +4,7 @@ import com.lackier.monetka.telegram.dto.enum.ButtonPressed
 import com.lackier.monetka.telegram.dto.enum.QueryParts
 import com.lackier.monetka.telegram.dto.enum.State
 import com.lackier.monetka.telegram.external.api.MonetkaApiClient
-import com.lackier.monetka.telegram.external.dto.enum.GroupType
+import com.lackier.monetka.telegram.external.dto.enum.CategoryType
 import com.lackier.monetka.telegram.keyboard.api.InlineKeyboardService
 import com.lackier.monetka.telegram.service.api.StateCacheService
 import lombok.AccessLevel
@@ -29,14 +29,14 @@ class CallbackQueryHandler(
         return when {
             data == ButtonPressed.MENU.path -> menu(chatId)
             data == ButtonPressed.SETTINGS.path -> settings(chatId)
-            data == ButtonPressed.GROUPS.path -> groups(chatId)
-            data.startsWith(ButtonPressed.GROUPS.path + QueryParts.PAGE_QUERY.path) -> groupsPage(chatId, data)
-            data.startsWith(ButtonPressed.GROUPS.path + QueryParts.ID_QUERY.path) -> group(chatId, data)
-            data.startsWith(ButtonPressed.GROUPS.path + QueryParts.ADD_QUERY.path) -> groupAdd(chatId, data)
-            data.startsWith(ButtonPressed.GROUPS.path + QueryParts.EDIT_QUERY.path)
-            -> groupEdit(chatId, data)
-            data.startsWith(ButtonPressed.GROUPS.path + QueryParts.DELETE_QUERY.path + QueryParts.ID_QUERY.path)
-            -> groupDelete(chatId, data)
+            data == ButtonPressed.CATEGORIES.path -> categories(chatId)
+            data.startsWith(ButtonPressed.CATEGORIES.path + QueryParts.PAGE_QUERY.path) -> categoriesPage(chatId, data)
+            data.startsWith(ButtonPressed.CATEGORIES.path + QueryParts.ID_QUERY.path) -> category(chatId, data)
+            data.startsWith(ButtonPressed.CATEGORIES.path + QueryParts.ADD_QUERY.path) -> categoryAdd(chatId, data)
+            data.startsWith(ButtonPressed.CATEGORIES.path + QueryParts.EDIT_QUERY.path)
+            -> categoryEdit(chatId, data)
+            data.startsWith(ButtonPressed.CATEGORIES.path + QueryParts.DELETE_QUERY.path + QueryParts.ID_QUERY.path)
+            -> categoryDelete(chatId, data)
             data == ButtonPressed.INCOMES.path -> incomes(chatId)
             data.startsWith(ButtonPressed.INCOMES.path + QueryParts.PAGE_QUERY.path) -> incomesPage(chatId, data)
             data.startsWith(ButtonPressed.INCOMES.path + QueryParts.ID_QUERY.path) -> income(chatId, data)
@@ -67,65 +67,65 @@ class CallbackQueryHandler(
         return message
     }
 
-    private fun groups(chatId: String): SendMessage {
-        stateCacheService.cache(chatId, State.GROUPS)
-        val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
-        message.replyMarkup = inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID()))
+    private fun categories(chatId: String): SendMessage {
+        stateCacheService.cache(chatId, State.CATEGORIES)
+        val message = SendMessage(chatId, ButtonPressed.CATEGORIES.text)
+        message.replyMarkup = inlineKeyboardService.categories(apiClient.getCategories(UUID.randomUUID()))
         return message
     }
 
-    private fun groupsPage(chatId: String, data: String): SendMessage {
-        stateCacheService.cache(chatId, State.GROUPS)
-        val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
+    private fun categoriesPage(chatId: String, data: String): SendMessage {
+        stateCacheService.cache(chatId, State.CATEGORIES)
+        val message = SendMessage(chatId, ButtonPressed.CATEGORIES.text)
         message.replyMarkup =
-            inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID(), getPageNumber(data)))
+            inlineKeyboardService.categories(apiClient.getCategories(UUID.randomUUID(), getPageNumber(data)))
         return message
     }
 
-    private fun groupAdd(chatId: String, data: String): SendMessage? {
-        stateCacheService.cache(chatId, State.GROUP_ADD)
-        val cached = stateCacheService.getGroupAdd(chatId)
+    private fun categoryAdd(chatId: String, data: String): SendMessage? {
+        stateCacheService.cache(chatId, State.CATEGORY_ADD)
+        val cached = stateCacheService.getCategoryAdd(chatId)
         return if (cached == null) {
-            stateCacheService.cacheGroupAdd(chatId, null, null)
-            val message = SendMessage(chatId, "Choose the type of new group:")
-            message.replyMarkup = inlineKeyboardService.chooseGroupType()
+            stateCacheService.cacheCategoryAdd(chatId, null, null)
+            val message = SendMessage(chatId, "Choose the type of new category:")
+            message.replyMarkup = inlineKeyboardService.chooseCategoryType()
             message
-        } else if (data.contains(QueryParts.GROUP_TYPE.path)) {
-            stateCacheService.cacheGroupAdd(chatId, getGroupType(data), null)
-            SendMessage(chatId, "Enter the name of new group:")
+        } else if (data.contains(QueryParts.CATEGORY_TYPE.path)) {
+            stateCacheService.cacheCategoryAdd(chatId, getCategoryType(data), null)
+            SendMessage(chatId, "Enter the name of new category:")
         } else {
             null
         }
     }
 
-    private fun group(chatId: String, data: String): SendMessage {
-        stateCacheService.cache(chatId, State.GROUPS)
+    private fun category(chatId: String, data: String): SendMessage {
+        stateCacheService.cache(chatId, State.CATEGORIES)
         val id = getId(data)
-        val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
-        message.replyMarkup = inlineKeyboardService.group(apiClient.getGroup(id))
+        val message = SendMessage(chatId, ButtonPressed.CATEGORIES.text)
+        message.replyMarkup = inlineKeyboardService.category(apiClient.getCategory(id))
         return message
     }
 
-    private fun groupEdit(chatId: String, data: String): SendMessage? {
-        stateCacheService.cache(chatId, State.GROUP_EDIT)
-        val cached = stateCacheService.getGroupEdit(chatId)
+    private fun categoryEdit(chatId: String, data: String): SendMessage? {
+        stateCacheService.cache(chatId, State.CATEGORY_EDIT)
+        val cached = stateCacheService.getCategoryEdit(chatId)
         return if (cached == null) {
-            stateCacheService.cacheGroupEdit(chatId, getId(data))
-            val message = SendMessage(chatId, "Choose the type of group:")
-            message.replyMarkup = inlineKeyboardService.chooseGroupTypeEdit()
+            stateCacheService.cacheCategoryEdit(chatId, getId(data))
+            val message = SendMessage(chatId, "Choose the type of category:")
+            message.replyMarkup = inlineKeyboardService.chooseCategoryTypeEdit()
             message
-        } else if (data.contains(QueryParts.GROUP_TYPE.path)) {
-            stateCacheService.cacheGroupEdit(chatId, getGroupType(data))
-            SendMessage(chatId, "Enter new name of group:")
+        } else if (data.contains(QueryParts.CATEGORY_TYPE.path)) {
+            stateCacheService.cacheCategoryEdit(chatId, getCategoryType(data))
+            SendMessage(chatId, "Enter new name of category:")
         } else {
             null
         }
     }
 
-    private fun groupDelete(chatId: String, data: String): SendMessage {
-        apiClient.deleteGroup(chatId, getId(data))
-        stateCacheService.cache(chatId, State.GROUPS)
-        return groups(chatId)
+    private fun categoryDelete(chatId: String, data: String): SendMessage {
+        apiClient.deleteCategory(chatId, getId(data))
+        stateCacheService.cache(chatId, State.CATEGORIES)
+        return categories(chatId)
     }
 
     private fun incomes(chatId: String): SendMessage {
@@ -186,7 +186,7 @@ class CallbackQueryHandler(
         return UUID.fromString(data.substringAfter(QueryParts.ID_QUERY.path))
     }
 
-    private fun getGroupType(data: String): GroupType {
-        return GroupType.valueOf(data.substringAfter(QueryParts.GROUP_TYPE.path))
+    private fun getCategoryType(data: String): CategoryType {
+        return CategoryType.valueOf(data.substringAfter(QueryParts.CATEGORY_TYPE.path))
     }
 }

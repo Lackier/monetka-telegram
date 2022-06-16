@@ -2,7 +2,7 @@ package com.lackier.monetka.telegram.keyboard.impl
 
 import com.lackier.monetka.telegram.dto.enum.ButtonPressed
 import com.lackier.monetka.telegram.dto.enum.QueryParts
-import com.lackier.monetka.telegram.external.dto.Group
+import com.lackier.monetka.telegram.external.dto.Category
 import com.lackier.monetka.telegram.external.dto.Transaction
 import com.lackier.monetka.telegram.keyboard.api.InlineKeyboardService
 import org.springframework.data.domain.Page
@@ -28,26 +28,26 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
                 listOf(InlineKeyboardButton(ButtonPressed.SETTINGS.text, ButtonPressed.SETTINGS.path)),
                 listOf(InlineKeyboardButton(ButtonPressed.INCOMES.text, ButtonPressed.INCOMES.path)),
                 listOf(InlineKeyboardButton(ButtonPressed.EXPENSES.text, ButtonPressed.EXPENSES.path)),
-                listOf(InlineKeyboardButton(ButtonPressed.GROUPS.text, ButtonPressed.GROUPS.path)),
+                listOf(InlineKeyboardButton(ButtonPressed.CATEGORIES.text, ButtonPressed.CATEGORIES.path)),
                 listOf(InlineKeyboardButton(ButtonPressed.STATISTICS.text, ButtonPressed.STATISTICS.path)),
                 listOf(InlineKeyboardButton(ButtonPressed.BACK.text, ButtonPressed.BACK.path))
             )
         return inlineKeyboardMarkup
     }
 
-    override fun groups(groups: Page<Group>): InlineKeyboardMarkup {
+    override fun categories(categories: Page<Category>): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         inlineKeyboardMarkup.keyboard =
-            groups.content.map { group -> listOf(groupButton(group)) }
-        inlineKeyboardMarkup.keyboard += addButton(ButtonPressed.GROUPS)
-        inlineKeyboardMarkup.keyboard += paging(groups, ButtonPressed.GROUPS)
+            categories.content.map { category -> listOf(categoryButton(category)) }
+        inlineKeyboardMarkup.keyboard += addButton(ButtonPressed.CATEGORIES)
+        inlineKeyboardMarkup.keyboard += paging(categories, ButtonPressed.CATEGORIES)
         return inlineKeyboardMarkup
     }
 
-    private fun groupButton(group: Group): InlineKeyboardButton {
+    private fun categoryButton(category: Category): InlineKeyboardButton {
         return InlineKeyboardButton(
-            group.name + " (" + group.type.text + ')',
-            ButtonPressed.GROUPS.path + QueryParts.ID_QUERY.path + group.id
+            category.name + " (" + category.type.text + ')',
+            ButtonPressed.CATEGORIES.path + QueryParts.ID_QUERY.path + category.id
         )
     }
 
@@ -55,22 +55,22 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         return listOf(InlineKeyboardButton(ButtonPressed.ADD.text, buttonPressed.path + ButtonPressed.ADD.path))
     }
 
-    private fun paging(groups: Page<*>, buttonPressed: ButtonPressed): List<InlineKeyboardButton> {
+    private fun paging(categories: Page<*>, buttonPressed: ButtonPressed): List<InlineKeyboardButton> {
         return when {
-            groups.isFirst and groups.isLast -> {
+            categories.isFirst and categories.isLast -> {
                 listOf(toMenu())
             }
-            groups.isFirst -> {
-                listOf(toMenu(), nextPageButton(groups.pageable, buttonPressed))
+            categories.isFirst -> {
+                listOf(toMenu(), nextPageButton(categories.pageable, buttonPressed))
             }
-            groups.isLast -> {
-                listOf(toMenu(), previousPageButton(groups.pageable, buttonPressed))
+            categories.isLast -> {
+                listOf(toMenu(), previousPageButton(categories.pageable, buttonPressed))
             }
             else -> {
                 listOf(
                     toMenu(),
-                    previousPageButton(groups.pageable, buttonPressed),
-                    nextPageButton(groups.pageable, buttonPressed)
+                    previousPageButton(categories.pageable, buttonPressed),
+                    nextPageButton(categories.pageable, buttonPressed)
                 )
             }
         }
@@ -120,41 +120,47 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         return inlineKeyboardMarkup
     }
 
-    override fun chooseGroupType(): InlineKeyboardMarkup {
-        val inlineKeyboardMarkup = InlineKeyboardMarkup()
-        inlineKeyboardMarkup.keyboard =
-            listOf(
-                listOf(
-                    InlineKeyboardButton(ButtonPressed.ADD_GROUP_INCOME.text, ButtonPressed.ADD_GROUP_INCOME.path),
-                    InlineKeyboardButton(ButtonPressed.ADD_GROUP_EXPENSE.text, ButtonPressed.ADD_GROUP_EXPENSE.path)
-                )
-            )
-        return inlineKeyboardMarkup
-    }
-
-    override fun chooseGroupTypeEdit(): InlineKeyboardMarkup {
+    override fun chooseCategoryType(): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         inlineKeyboardMarkup.keyboard =
             listOf(
                 listOf(
                     InlineKeyboardButton(
-                        ButtonPressed.INCOME.text,
-                        ButtonPressed.GROUPS.path + ButtonPressed.EDIT.path + ButtonPressed.INCOME.path
+                        ButtonPressed.ADD_CATEGORY_INCOME.text,
+                        ButtonPressed.ADD_CATEGORY_INCOME.path
                     ),
                     InlineKeyboardButton(
-                        ButtonPressed.EXPENSE.text,
-                        ButtonPressed.GROUPS.path + ButtonPressed.EDIT.path + ButtonPressed.EXPENSE.path
+                        ButtonPressed.ADD_CATEGORY_EXPENSE.text,
+                        ButtonPressed.ADD_CATEGORY_EXPENSE.path
                     )
                 )
             )
         return inlineKeyboardMarkup
     }
 
-    override fun group(group: Group): InlineKeyboardMarkup {
+    override fun chooseCategoryTypeEdit(): InlineKeyboardMarkup {
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        inlineKeyboardMarkup.keyboard =
+            listOf(
+                listOf(
+                    InlineKeyboardButton(
+                        ButtonPressed.INCOME.text,
+                        ButtonPressed.CATEGORIES.path + ButtonPressed.EDIT.path + ButtonPressed.INCOME.path
+                    ),
+                    InlineKeyboardButton(
+                        ButtonPressed.EXPENSE.text,
+                        ButtonPressed.CATEGORIES.path + ButtonPressed.EDIT.path + ButtonPressed.EXPENSE.path
+                    )
+                )
+            )
+        return inlineKeyboardMarkup
+    }
+
+    override fun category(category: Category): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         inlineKeyboardMarkup.keyboard = listOf(
-            listOf(groupButton(group)),
-            editDeleteButton(group.id!!, ButtonPressed.GROUPS),
+            listOf(categoryButton(category)),
+            editDeleteButton(category.id!!, ButtonPressed.CATEGORIES),
             listOf(toMenu())
         )
         return inlineKeyboardMarkup

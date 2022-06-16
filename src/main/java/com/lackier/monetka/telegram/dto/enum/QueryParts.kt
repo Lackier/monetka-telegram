@@ -6,5 +6,5 @@ enum class QueryParts(val path: String) {
     ADD_QUERY("_add"),
     EDIT_QUERY("_edit"),
     DELETE_QUERY("_delete"),
-    GROUP_TYPE("_group-type=")
+    CATEGORY_TYPE("_category-type=")
 }

@@ -1,7 +1,7 @@
 package com.lackier.monetka.telegram.external.impl
 
 import com.lackier.monetka.telegram.external.api.MonetkaApiClient
-import com.lackier.monetka.telegram.external.dto.Group
+import com.lackier.monetka.telegram.external.dto.Category
 import com.lackier.monetka.telegram.external.dto.Transaction
 import org.jeasy.random.EasyRandom
 import org.springframework.data.domain.*
@@ -14,20 +14,28 @@ class MonetkaApiClientStub : MonetkaApiClient {
     private val generator = EasyRandom()
     private val defaultPageable: Pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createdDate")))
 
-    override fun getGroups(userId: UUID): Page<Group> {
-        return PageImpl(listOf(getGroup(), getGroup(), getGroup(), getGroup(), getGroup()), defaultPageable, 5)
+    override fun getCategories(userId: UUID): Page<Category> {
+        return PageImpl(
+            listOf(getCategory(), getCategory(), getCategory(), getCategory(), getCategory()),
+            defaultPageable,
+            5
+        )
     }
 
-    override fun getGroups(userId: UUID, pageNumber: Int): Page<Group> {
-        return PageImpl(listOf(getGroup(), getGroup(), getGroup(), getGroup(), getGroup()), getPageable(pageNumber), 5)
+    override fun getCategories(userId: UUID, pageNumber: Int): Page<Category> {
+        return PageImpl(
+            listOf(getCategory(), getCategory(), getCategory(), getCategory(), getCategory()),
+            getPageable(pageNumber),
+            5
+        )
     }
 
     private fun getPageable(pageNumber: Int): Pageable {
         return PageRequest.of(pageNumber, 10, Sort.by(Sort.Order.desc("createdDate")))
     }
 
-    private fun getGroup(): Group {
-        return generator.nextObject(Class.forName("com.lackier.monetka.telegram.external.dto.Group")) as Group
+    private fun getCategory(): Category {
+        return generator.nextObject(Class.forName("com.lackier.monetka.telegram.external.dto.Category")) as Category
     }
 
     override fun getTodayExpenses(userId: UUID): Page<Transaction> {
@@ -67,21 +75,21 @@ class MonetkaApiClientStub : MonetkaApiClient {
         return PageImpl(listOf(getIncome(), getIncome(), getIncome()), getPageable(pageNumber), 3)
     }
 
-    override fun createGroup(group: Group) {
-        println(group)
+    override fun createCategory(category: Category) {
+        println(category)
         //TODO
     }
 
-    override fun editGroup(group: Group) {
-        println(group)
+    override fun editCategory(category: Category) {
+        println(category)
         //TODO
     }
 
-    override fun getGroup(id: UUID): Group {
-        return getGroup()
+    override fun getCategory(id: UUID): Category {
+        return getCategory()
     }
 
-    override fun deleteGroup(chatId: String, id: UUID) {
+    override fun deleteCategory(chatId: String, id: UUID) {
         println(chatId + id)
         //TODO
     }

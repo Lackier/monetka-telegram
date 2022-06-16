@@ -4,9 +4,9 @@ enum class State {
     DEFAULT,
     MENU,
     SETTINGS,
-    GROUPS,
-    GROUP_ADD,
-    GROUP_EDIT,
+    CATEGORIES,
+    CATEGORY_ADD,
+    CATEGORY_EDIT,
     INCOMES,
     EXPENSES,
     STATISTICS
