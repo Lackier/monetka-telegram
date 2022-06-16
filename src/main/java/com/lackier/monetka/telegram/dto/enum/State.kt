@@ -6,6 +6,7 @@ enum class State {
     SETTINGS,
     GROUPS,
     GROUP_ADD,
+    GROUP_EDIT,
     INCOMES,
     EXPENSES,
     STATISTICS

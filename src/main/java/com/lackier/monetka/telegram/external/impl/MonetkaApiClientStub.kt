@@ -72,6 +72,20 @@ class MonetkaApiClientStub : MonetkaApiClient {
         //TODO
     }
 
+    override fun editGroup(group: Group) {
+        println(group)
+        //TODO
+    }
+
+    override fun getGroup(id: UUID): Group {
+        return getGroup()
+    }
+
+    override fun deleteGroup(chatId: String, id: UUID) {
+        println(chatId + id)
+        //TODO
+    }
+
     private fun getIncome(): Transaction {
         val transaction = getTransaction()
         if (transaction.value < 0) {

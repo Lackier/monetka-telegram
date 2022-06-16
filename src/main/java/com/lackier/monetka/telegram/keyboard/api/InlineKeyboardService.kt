@@ -11,5 +11,7 @@ interface InlineKeyboardService {
     fun incomes(incomes: Page<Transaction>): InlineKeyboardMarkup
     fun expenses(expenses: Page<Transaction>): InlineKeyboardMarkup
     fun statistics(): InlineKeyboardMarkup
-    fun chooseGroupType():InlineKeyboardMarkup
+    fun chooseGroupType(): InlineKeyboardMarkup
+    fun chooseGroupTypeEdit(): InlineKeyboardMarkup
+    fun group(group: Group): InlineKeyboardMarkup
 }

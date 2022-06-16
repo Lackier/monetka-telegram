@@ -33,6 +33,10 @@ class CallbackQueryHandler(
             data.startsWith(ButtonPressed.GROUPS.path + QueryParts.PAGE_QUERY.path) -> groupsPage(chatId, data)
             data.startsWith(ButtonPressed.GROUPS.path + QueryParts.ID_QUERY.path) -> group(chatId, data)
             data.startsWith(ButtonPressed.GROUPS.path + QueryParts.ADD_QUERY.path) -> groupAdd(chatId, data)
+            data.startsWith(ButtonPressed.GROUPS.path + QueryParts.EDIT_QUERY.path)
+            -> groupEdit(chatId, data)
+            data.startsWith(ButtonPressed.GROUPS.path + QueryParts.DELETE_QUERY.path + QueryParts.ID_QUERY.path)
+            -> groupDelete(chatId, data)
             data == ButtonPressed.INCOMES.path -> incomes(chatId)
             data.startsWith(ButtonPressed.INCOMES.path + QueryParts.PAGE_QUERY.path) -> incomesPage(chatId, data)
             data.startsWith(ButtonPressed.INCOMES.path + QueryParts.ID_QUERY.path) -> income(chatId, data)
@@ -94,10 +98,34 @@ class CallbackQueryHandler(
         }
     }
 
-    private fun group(chatId: String, data: String): Nothing? {
+    private fun group(chatId: String, data: String): SendMessage {
         stateCacheService.cache(chatId, State.GROUPS)
         val id = getId(data)
-        return null//TODO
+        val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
+        message.replyMarkup = inlineKeyboardService.group(apiClient.getGroup(id))
+        return message
+    }
+
+    private fun groupEdit(chatId: String, data: String): SendMessage? {
+        stateCacheService.cache(chatId, State.GROUP_EDIT)
+        val cached = stateCacheService.getGroupEdit(chatId)
+        return if (cached == null) {
+            stateCacheService.cacheGroupEdit(chatId, getId(data))
+            val message = SendMessage(chatId, "Choose the type of group:")
+            message.replyMarkup = inlineKeyboardService.chooseGroupTypeEdit()
+            message
+        } else if (data.contains(QueryParts.GROUP_TYPE.path)) {
+            stateCacheService.cacheGroupEdit(chatId, getGroupType(data))
+            SendMessage(chatId, "Enter new name of group:")
+        } else {
+            null
+        }
+    }
+
+    private fun groupDelete(chatId: String, data: String): SendMessage {
+        apiClient.deleteGroup(chatId, getId(data))
+        stateCacheService.cache(chatId, State.GROUPS)
+        return groups(chatId)
     }
 
     private fun incomes(chatId: String): SendMessage {

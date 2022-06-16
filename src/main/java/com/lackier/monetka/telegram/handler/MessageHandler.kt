@@ -38,6 +38,15 @@ class MessageHandler(
             val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
             message.replyMarkup = inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID()))
             message
+        } else if ((stateCacheService.getState(chatId) == State.GROUP_EDIT) and stateCacheService.hasGroupEdit(chatId)) {
+            val groupAdd = stateCacheService.getGroupEdit(chatId)
+            apiClient.editGroup(Group(groupAdd?.id, chatId, inputText, groupAdd?.type!!, ZonedDateTime.now()))
+
+            stateCacheService.uncacheGroupEdit(chatId)
+            stateCacheService.cache(chatId, State.GROUPS)
+            val message = SendMessage(chatId, ButtonPressed.GROUPS.text)
+            message.replyMarkup = inlineKeyboardService.groups(apiClient.getGroups(UUID.randomUUID()))
+            message
         } else {
             SendMessage(chatId, "Menu")
         }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
+import java.util.*
 
 @Service
 class InlineKeyboardServiceImpl : InlineKeyboardService {
@@ -57,30 +58,26 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
     private fun paging(groups: Page<*>, buttonPressed: ButtonPressed): List<InlineKeyboardButton> {
         return when {
             groups.isFirst and groups.isLast -> {
-                listOf(
-                    InlineKeyboardButton(ButtonPressed.TO_MENU.text, ButtonPressed.TO_MENU.path)
-                )
+                listOf(toMenu())
             }
             groups.isFirst -> {
-                listOf(
-                    InlineKeyboardButton(ButtonPressed.TO_MENU.text, ButtonPressed.TO_MENU.path),
-                    nextPageButton(groups.pageable, buttonPressed)
-                )
+                listOf(toMenu(), nextPageButton(groups.pageable, buttonPressed))
             }
             groups.isLast -> {
-                listOf(
-                    InlineKeyboardButton(ButtonPressed.TO_MENU.text, ButtonPressed.TO_MENU.path),
-                    previousPageButton(groups.pageable, buttonPressed)
-                )
+                listOf(toMenu(), previousPageButton(groups.pageable, buttonPressed))
             }
             else -> {
                 listOf(
-                    InlineKeyboardButton(ButtonPressed.TO_MENU.text, ButtonPressed.TO_MENU.path),
+                    toMenu(),
                     previousPageButton(groups.pageable, buttonPressed),
                     nextPageButton(groups.pageable, buttonPressed)
                 )
             }
         }
+    }
+
+    private fun toMenu(): InlineKeyboardButton {
+        return InlineKeyboardButton(ButtonPressed.TO_MENU.text, ButtonPressed.TO_MENU.path)
     }
 
     private fun previousPageButton(pageable: Pageable, buttonPressed: ButtonPressed): InlineKeyboardButton {
@@ -128,10 +125,51 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         inlineKeyboardMarkup.keyboard =
             listOf(
                 listOf(
-                    InlineKeyboardButton(ButtonPressed.GROUP_INCOME.text, ButtonPressed.GROUP_INCOME.path),
-                    InlineKeyboardButton(ButtonPressed.GROUP_EXPENSE.text, ButtonPressed.GROUP_EXPENSE.path)
+                    InlineKeyboardButton(ButtonPressed.ADD_GROUP_INCOME.text, ButtonPressed.ADD_GROUP_INCOME.path),
+                    InlineKeyboardButton(ButtonPressed.ADD_GROUP_EXPENSE.text, ButtonPressed.ADD_GROUP_EXPENSE.path)
                 )
             )
         return inlineKeyboardMarkup
+    }
+
+    override fun chooseGroupTypeEdit(): InlineKeyboardMarkup {
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        inlineKeyboardMarkup.keyboard =
+            listOf(
+                listOf(
+                    InlineKeyboardButton(
+                        ButtonPressed.INCOME.text,
+                        ButtonPressed.GROUPS.path + ButtonPressed.EDIT.path + ButtonPressed.INCOME.path
+                    ),
+                    InlineKeyboardButton(
+                        ButtonPressed.EXPENSE.text,
+                        ButtonPressed.GROUPS.path + ButtonPressed.EDIT.path + ButtonPressed.EXPENSE.path
+                    )
+                )
+            )
+        return inlineKeyboardMarkup
+    }
+
+    override fun group(group: Group): InlineKeyboardMarkup {
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        inlineKeyboardMarkup.keyboard = listOf(
+            listOf(groupButton(group)),
+            editDeleteButton(group.id!!, ButtonPressed.GROUPS),
+            listOf(toMenu())
+        )
+        return inlineKeyboardMarkup
+    }
+
+    private fun editDeleteButton(id: UUID, buttonPressed: ButtonPressed): List<InlineKeyboardButton> {
+        return listOf(
+            InlineKeyboardButton(
+                ButtonPressed.EDIT.text,
+                buttonPressed.path + ButtonPressed.EDIT.path + QueryParts.ID_QUERY.path + id
+            ),
+            InlineKeyboardButton(
+                ButtonPressed.DELETE.text,
+                buttonPressed.path + ButtonPressed.DELETE.path + QueryParts.ID_QUERY.path + id
+            )
+        )
     }
 }
