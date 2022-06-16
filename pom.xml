@@ -18,7 +18,7 @@
 
     <properties>
         <java.version>15</java.version>
-        <kotlin.version>1.6.21</kotlin.version>
+        <kotlin.version>1.7.0</kotlin.version>
     </properties>
 
     <dependencies>
@@ -96,6 +96,12 @@
             <groupId>org.jeasy</groupId>
             <artifactId>easy-random-core</artifactId>
             <version>4.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lackier.monetka</groupId>
+            <artifactId>backend-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

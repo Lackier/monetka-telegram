@@ -1,8 +1,8 @@
 package com.lackier.monetka.telegram.external.impl
 
-import com.lackier.monetka.telegram.external.api.MonetkaApiClient
-import com.lackier.monetka.telegram.external.dto.Category
-import com.lackier.monetka.telegram.external.dto.Transaction
+import com.lackier.monetka.backend.api.client.MonetkaApiClient
+import com.lackier.monetka.backend.api.dto.CategoryDto
+import com.lackier.monetka.backend.api.dto.TransactionDto
 import org.jeasy.random.EasyRandom
 import org.springframework.data.domain.*
 import org.springframework.stereotype.Service
@@ -12,9 +12,9 @@ import java.util.*
 @Service
 class MonetkaApiClientStub : MonetkaApiClient {
     private val generator = EasyRandom()
-    private val defaultPageable: Pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createdDate")))
+    private val defaultPageable: Pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createdAt")))
 
-    override fun getCategories(userId: UUID): Page<Category> {
+    override fun getCategories(userId: UUID): Page<CategoryDto> {
         return PageImpl(
             listOf(getCategory(), getCategory(), getCategory(), getCategory(), getCategory()),
             defaultPageable,
@@ -22,7 +22,7 @@ class MonetkaApiClientStub : MonetkaApiClient {
         )
     }
 
-    override fun getCategories(userId: UUID, pageNumber: Int): Page<Category> {
+    override fun getCategories(userId: UUID, pageNumber: Int): Page<CategoryDto> {
         return PageImpl(
             listOf(getCategory(), getCategory(), getCategory(), getCategory(), getCategory()),
             getPageable(pageNumber),
@@ -34,11 +34,11 @@ class MonetkaApiClientStub : MonetkaApiClient {
         return PageRequest.of(pageNumber, 10, Sort.by(Sort.Order.desc("createdDate")))
     }
 
-    private fun getCategory(): Category {
-        return generator.nextObject(Class.forName("com.lackier.monetka.telegram.external.dto.Category")) as Category
+    private fun getCategory(): CategoryDto {
+        return generator.nextObject(Class.forName("com.lackier.monetka.backend.api.dto.CategoryDto")) as CategoryDto
     }
 
-    override fun getTodayExpenses(userId: UUID): Page<Transaction> {
+    override fun getTodayExpenses(userId: UUID): Page<TransactionDto> {
         return PageImpl(
             listOf(
                 getExpense(), getExpense(), getExpense(), getExpense(), getExpense(),
@@ -47,7 +47,7 @@ class MonetkaApiClientStub : MonetkaApiClient {
         )
     }
 
-    override fun getTodayExpenses(userId: UUID, pageNumber: Int): Page<Transaction> {
+    override fun getTodayExpenses(userId: UUID, pageNumber: Int): Page<TransactionDto> {
         return PageImpl(
             listOf(
                 getExpense(), getExpense(), getExpense(), getExpense(), getExpense(),
@@ -56,7 +56,7 @@ class MonetkaApiClientStub : MonetkaApiClient {
         )
     }
 
-    private fun getExpense(): Transaction {
+    private fun getExpense(): TransactionDto {
         val transaction = getTransaction()
         if (transaction.value > 0) {
             transaction.value *= -1
@@ -67,25 +67,25 @@ class MonetkaApiClientStub : MonetkaApiClient {
         return transaction
     }
 
-    override fun getTodayIncomes(userId: UUID): Page<Transaction> {
+    override fun getTodayIncomes(userId: UUID): Page<TransactionDto> {
         return PageImpl(listOf(getIncome(), getIncome(), getIncome()), defaultPageable, 3)
     }
 
-    override fun getTodayIncomes(userId: UUID, pageNumber: Int): Page<Transaction> {
+    override fun getTodayIncomes(userId: UUID, pageNumber: Int): Page<TransactionDto> {
         return PageImpl(listOf(getIncome(), getIncome(), getIncome()), getPageable(pageNumber), 3)
     }
 
-    override fun createCategory(category: Category) {
-        println(category)
+    override fun createCategory(categoryDto: CategoryDto) {
+        println(categoryDto)
         //TODO
     }
 
-    override fun editCategory(category: Category) {
-        println(category)
+    override fun editCategory(categoryDto: CategoryDto) {
+        println(categoryDto)
         //TODO
     }
 
-    override fun getCategory(id: UUID): Category {
+    override fun getCategory(id: UUID): CategoryDto {
         return getCategory()
     }
 
@@ -94,7 +94,7 @@ class MonetkaApiClientStub : MonetkaApiClient {
         //TODO
     }
 
-    private fun getIncome(): Transaction {
+    private fun getIncome(): TransactionDto {
         val transaction = getTransaction()
         if (transaction.value < 0) {
             transaction.value *= -1
@@ -105,7 +105,7 @@ class MonetkaApiClientStub : MonetkaApiClient {
         return transaction
     }
 
-    private fun getTransaction(): Transaction {
-        return generator.nextObject(Class.forName("com.lackier.monetka.telegram.external.dto.Transaction")) as Transaction
+    private fun getTransaction(): TransactionDto {
+        return generator.nextObject(Class.forName("com.lackier.monetka.backend.api.dto.TransactionDto")) as TransactionDto
     }
 }

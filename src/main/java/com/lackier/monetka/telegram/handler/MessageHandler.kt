@@ -1,9 +1,9 @@
 package com.lackier.monetka.telegram.handler
 
+import com.lackier.monetka.backend.api.client.MonetkaApiClient
+import com.lackier.monetka.backend.api.dto.CategoryDto
 import com.lackier.monetka.telegram.dto.enum.ButtonPressed
 import com.lackier.monetka.telegram.dto.enum.State
-import com.lackier.monetka.telegram.external.api.MonetkaApiClient
-import com.lackier.monetka.telegram.external.dto.Category
 import com.lackier.monetka.telegram.keyboard.api.InlineKeyboardService
 import com.lackier.monetka.telegram.service.api.StateCacheService
 import lombok.AccessLevel
@@ -31,7 +31,7 @@ class MessageHandler(
 
         return if ((stateCacheService.getState(chatId) == State.CATEGORY_ADD) and stateCacheService.hasCategoryAdd(chatId)) {
             val categoryAdd = stateCacheService.getCategoryAdd(chatId)
-            apiClient.createCategory(Category(null, chatId, inputText, categoryAdd?.type!!, ZonedDateTime.now()))
+            apiClient.createCategory(CategoryDto(null, chatId, inputText, categoryAdd?.type!!, ZonedDateTime.now()))
 
             stateCacheService.uncacheCategoryAdd(chatId)
             stateCacheService.cache(chatId, State.CATEGORIES)
@@ -40,7 +40,7 @@ class MessageHandler(
             message
         } else if ((stateCacheService.getState(chatId) == State.CATEGORY_EDIT) and stateCacheService.hasCategoryEdit(chatId)) {
             val categoryEdit = stateCacheService.getCategoryEdit(chatId)
-            apiClient.editCategory(Category(categoryEdit?.id, chatId, inputText, categoryEdit?.type!!, ZonedDateTime.now()))
+            apiClient.editCategory(CategoryDto(categoryEdit?.id, chatId, inputText, categoryEdit?.type!!, ZonedDateTime.now()))
 
             stateCacheService.uncacheCategoryEdit(chatId)
             stateCacheService.cache(chatId, State.CATEGORIES)

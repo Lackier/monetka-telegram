@@ -1,10 +1,10 @@
 package com.lackier.monetka.telegram.service.impl
 
+import com.lackier.monetka.backend.api.enums.CategoryTypeDto
 import com.lackier.monetka.telegram.dto.ChatState
 import com.lackier.monetka.telegram.dto.CategoryAdd
 import com.lackier.monetka.telegram.dto.CategoryEdit
 import com.lackier.monetka.telegram.dto.enum.State
-import com.lackier.monetka.telegram.external.dto.enum.CategoryType
 import com.lackier.monetka.telegram.service.api.StateCacheService
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
@@ -28,7 +28,7 @@ class StateCacheServiceImpl : StateCacheService {
         return state?.state ?: State.DEFAULT
     }
 
-    override fun cacheCategoryAdd(chatId: String, type: CategoryType?, name: String?) {
+    override fun cacheCategoryAdd(chatId: String, type: CategoryTypeDto?, name: String?) {
         categoryAddCache[chatId] = CategoryAdd(Date(), type, name)
     }
 
@@ -48,7 +48,7 @@ class StateCacheServiceImpl : StateCacheService {
         categoryEditCache[chatId] = CategoryEdit(Date(), id, null, null)
     }
 
-    override fun cacheCategoryEdit(chatId: String, type: CategoryType) {
+    override fun cacheCategoryEdit(chatId: String, type: CategoryTypeDto) {
         val categoryEdit = getCategoryEdit(chatId)
         categoryEdit?.type = type
         categoryEditCache[chatId] = categoryEdit

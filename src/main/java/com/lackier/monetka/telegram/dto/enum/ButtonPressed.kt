@@ -1,6 +1,7 @@
 package com.lackier.monetka.telegram.dto.enum
 
-import com.lackier.monetka.telegram.external.dto.enum.CategoryType
+import com.lackier.monetka.backend.api.enums.CategoryTypeDto
+
 
 enum class ButtonPressed(val path: String, val text: String) {
     MENU("/menu", "Menu"),
@@ -13,15 +14,15 @@ enum class ButtonPressed(val path: String, val text: String) {
     STATISTICS("/statistics", "Statistics"),
     ADD(QueryParts.ADD_QUERY.path, "Add new"),
     ADD_CATEGORY_INCOME(
-        CATEGORIES.path + QueryParts.ADD_QUERY.path + QueryParts.CATEGORY_TYPE.path + CategoryType.INCOME,
+        CATEGORIES.path + QueryParts.ADD_QUERY.path + QueryParts.CATEGORY_TYPE.path + CategoryTypeDto.INCOME,
         "Income"
     ),
     ADD_CATEGORY_EXPENSE(
-        CATEGORIES.path + QueryParts.ADD_QUERY.path + QueryParts.CATEGORY_TYPE.path + CategoryType.EXPENSE,
+        CATEGORIES.path + QueryParts.ADD_QUERY.path + QueryParts.CATEGORY_TYPE.path + CategoryTypeDto.EXPENSE,
         "Expense"
     ),
     EDIT(QueryParts.EDIT_QUERY.path, "Edit"),
-    INCOME(QueryParts.CATEGORY_TYPE.path + CategoryType.INCOME, "Income"),
-    EXPENSE(QueryParts.CATEGORY_TYPE.path + CategoryType.EXPENSE, "Expense"),
+    INCOME(QueryParts.CATEGORY_TYPE.path + CategoryTypeDto.INCOME, "Income"),
+    EXPENSE(QueryParts.CATEGORY_TYPE.path + CategoryTypeDto.EXPENSE, "Expense"),
     DELETE(QueryParts.DELETE_QUERY.path, "Delete")
 }

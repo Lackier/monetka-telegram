@@ -1,10 +1,10 @@
 package com.lackier.monetka.telegram.handler
 
+import com.lackier.monetka.backend.api.client.MonetkaApiClient
+import com.lackier.monetka.backend.api.enums.CategoryTypeDto
 import com.lackier.monetka.telegram.dto.enum.ButtonPressed
 import com.lackier.monetka.telegram.dto.enum.QueryParts
 import com.lackier.monetka.telegram.dto.enum.State
-import com.lackier.monetka.telegram.external.api.MonetkaApiClient
-import com.lackier.monetka.telegram.external.dto.enum.CategoryType
 import com.lackier.monetka.telegram.keyboard.api.InlineKeyboardService
 import com.lackier.monetka.telegram.service.api.StateCacheService
 import lombok.AccessLevel
@@ -186,7 +186,7 @@ class CallbackQueryHandler(
         return UUID.fromString(data.substringAfter(QueryParts.ID_QUERY.path))
     }
 
-    private fun getCategoryType(data: String): CategoryType {
-        return CategoryType.valueOf(data.substringAfter(QueryParts.CATEGORY_TYPE.path))
+    private fun getCategoryType(data: String): CategoryTypeDto {
+        return CategoryTypeDto.valueOf(data.substringAfter(QueryParts.CATEGORY_TYPE.path))
     }
 }

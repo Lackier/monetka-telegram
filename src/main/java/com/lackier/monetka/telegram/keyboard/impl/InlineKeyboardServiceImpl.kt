@@ -1,9 +1,9 @@
 package com.lackier.monetka.telegram.keyboard.impl
 
+import com.lackier.monetka.backend.api.dto.CategoryDto
+import com.lackier.monetka.backend.api.dto.TransactionDto
 import com.lackier.monetka.telegram.dto.enum.ButtonPressed
 import com.lackier.monetka.telegram.dto.enum.QueryParts
-import com.lackier.monetka.telegram.external.dto.Category
-import com.lackier.monetka.telegram.external.dto.Transaction
 import com.lackier.monetka.telegram.keyboard.api.InlineKeyboardService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -35,7 +35,7 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         return inlineKeyboardMarkup
     }
 
-    override fun categories(categories: Page<Category>): InlineKeyboardMarkup {
+    override fun categories(categories: Page<CategoryDto>): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         inlineKeyboardMarkup.keyboard =
             categories.content.map { category -> listOf(categoryButton(category)) }
@@ -44,10 +44,10 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         return inlineKeyboardMarkup
     }
 
-    private fun categoryButton(category: Category): InlineKeyboardButton {
+    private fun categoryButton(categoryDto: CategoryDto): InlineKeyboardButton {
         return InlineKeyboardButton(
-            category.name + " (" + category.type.text + ')',
-            ButtonPressed.CATEGORIES.path + QueryParts.ID_QUERY.path + category.id
+            categoryDto.name + " (" + categoryDto.type.text + ')',
+            ButtonPressed.CATEGORIES.path + QueryParts.ID_QUERY.path + categoryDto.id
         )
     }
 
@@ -88,7 +88,7 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         return InlineKeyboardButton(">", buttonPressed.path + QueryParts.PAGE_QUERY.path + (pageable.pageNumber + 1))
     }
 
-    override fun incomes(incomes: Page<Transaction>): InlineKeyboardMarkup {
+    override fun incomes(incomes: Page<TransactionDto>): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         inlineKeyboardMarkup.keyboard =
             incomes.content.map { transaction -> listOf(transactionButton(transaction, ButtonPressed.INCOMES)) }
@@ -97,7 +97,7 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         return inlineKeyboardMarkup
     }
 
-    override fun expenses(expenses: Page<Transaction>): InlineKeyboardMarkup {
+    override fun expenses(expenses: Page<TransactionDto>): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         inlineKeyboardMarkup.keyboard =
             expenses.content.map { transaction -> listOf(transactionButton(transaction, ButtonPressed.EXPENSES)) }
@@ -106,10 +106,10 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         return inlineKeyboardMarkup
     }
 
-    private fun transactionButton(transaction: Transaction, buttonPressed: ButtonPressed): InlineKeyboardButton {
+    private fun transactionButton(transactionDto: TransactionDto, buttonPressed: ButtonPressed): InlineKeyboardButton {
         return InlineKeyboardButton(
-            transaction.name + ' ' + transaction.createdAt.hour + ':' + transaction.createdAt.minute,
-            buttonPressed.path + QueryParts.ID_QUERY.path + transaction.id
+            transactionDto.name + ' ' + transactionDto.createdAt.hour + ':' + transactionDto.createdAt.minute,
+            buttonPressed.path + QueryParts.ID_QUERY.path + transactionDto.id
         )
     }
 
@@ -156,11 +156,11 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         return inlineKeyboardMarkup
     }
 
-    override fun category(category: Category): InlineKeyboardMarkup {
+    override fun category(categoryDto: CategoryDto): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         inlineKeyboardMarkup.keyboard = listOf(
-            listOf(categoryButton(category)),
-            editDeleteButton(category.id!!, ButtonPressed.CATEGORIES),
+            listOf(categoryButton(categoryDto)),
+            editDeleteButton(categoryDto.id!!, ButtonPressed.CATEGORIES),
             listOf(toMenu())
         )
         return inlineKeyboardMarkup
