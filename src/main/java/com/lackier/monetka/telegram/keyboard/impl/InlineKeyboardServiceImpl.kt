@@ -3,6 +3,7 @@ package com.lackier.monetka.telegram.keyboard.impl
 import com.lackier.monetka.backend.api.dto.CategoryDto
 import com.lackier.monetka.backend.api.dto.TransactionDto
 import com.lackier.monetka.telegram.dto.enum.ButtonPressed
+import com.lackier.monetka.telegram.dto.enum.Query
 import com.lackier.monetka.telegram.dto.enum.QueryParts
 import com.lackier.monetka.telegram.keyboard.api.InlineKeyboardService
 import org.springframework.data.domain.Page
@@ -97,6 +98,37 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         return inlineKeyboardMarkup
     }
 
+    override fun income(incomeDto: TransactionDto): InlineKeyboardMarkup {
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        inlineKeyboardMarkup.keyboard = listOf(
+            listOf(incomeButton(incomeDto)),
+            editDeleteButton(incomeDto.id!!, ButtonPressed.INCOMES),
+            listOf(toMenu())
+        )
+        return inlineKeyboardMarkup
+    }
+
+    override fun chooseIncomeCategory(categories: List<CategoryDto>, query: Query): InlineKeyboardMarkup {
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        inlineKeyboardMarkup.keyboard =
+            categories.map { category ->
+                listOf(
+                    InlineKeyboardButton(
+                        category.name,
+                        query.path + QueryParts.INCOME_CATEGORY.path + category.id
+                    )
+                )
+            }
+        return inlineKeyboardMarkup
+    }
+
+    private fun incomeButton(incomeDto: TransactionDto): InlineKeyboardButton {
+        return InlineKeyboardButton(
+            incomeDto.name + " (" + incomeDto.categoryDto.name + ')' + ' ' + incomeDto.value,
+            ButtonPressed.INCOMES.path + QueryParts.ID_QUERY.path + incomeDto.id
+        )
+    }
+
     override fun expenses(expenses: Page<TransactionDto>): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         inlineKeyboardMarkup.keyboard =
@@ -104,6 +136,37 @@ class InlineKeyboardServiceImpl : InlineKeyboardService {
         inlineKeyboardMarkup.keyboard += addButton(ButtonPressed.EXPENSES)
         inlineKeyboardMarkup.keyboard += paging(expenses, ButtonPressed.EXPENSES)
         return inlineKeyboardMarkup
+    }
+
+    override fun expense(expenseDto: TransactionDto): InlineKeyboardMarkup {
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        inlineKeyboardMarkup.keyboard = listOf(
+            listOf(expenseButton(expenseDto)),
+            editDeleteButton(expenseDto.id!!, ButtonPressed.EXPENSES),
+            listOf(toMenu())
+        )
+        return inlineKeyboardMarkup
+    }
+
+    override fun chooseExpenseCategory(categories: List<CategoryDto>, query: Query): InlineKeyboardMarkup {
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        inlineKeyboardMarkup.keyboard =
+            categories.map { category ->
+                listOf(
+                    InlineKeyboardButton(
+                        category.name,
+                        query.path + QueryParts.EXPENSE_CATEGORY.path + category.id
+                    )
+                )
+            }
+        return inlineKeyboardMarkup
+    }
+
+    private fun expenseButton(expenseDto: TransactionDto): InlineKeyboardButton {
+        return InlineKeyboardButton(
+            expenseDto.name + " (" + expenseDto.categoryDto.name + ')' + ' ' + expenseDto.value,
+            ButtonPressed.EXPENSES.path + QueryParts.ID_QUERY.path + expenseDto.id
+        )
     }
 
     private fun transactionButton(transactionDto: TransactionDto, buttonPressed: ButtonPressed): InlineKeyboardButton {
